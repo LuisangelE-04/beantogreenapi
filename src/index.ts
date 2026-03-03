@@ -11,8 +11,19 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
-	},
-} satisfies ExportedHandler<Env>;
+import { env } from "cloudflare:workers";
+import { httpServerHandler } from "cloudflare:node";
+import express from "express";
+
+const app = express()
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Health check endpoint
+app.get("/", (req, res) => {
+	res.json({ message: "Express.js running on Cloudflare Workers!"})
+})
+
+app.listen(3000);
+export default httpServerHandler( { port: 3000 })
