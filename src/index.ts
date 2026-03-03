@@ -14,6 +14,8 @@
 import { env } from "cloudflare:workers";
 import { httpServerHandler } from "cloudflare:node";
 import express from "express";
+import userRoutes from "./routes/users";
+import authRoutes from "./routes/auth";
 
 const app = express()
 
@@ -24,6 +26,9 @@ app.use(express.json());
 app.get("/", (req, res) => {
 	res.json({ message: "Express.js running on Cloudflare Workers!"})
 })
+
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes)
 
 app.listen(3000);
 export default httpServerHandler( { port: 3000 })
