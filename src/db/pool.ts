@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Pool } from "@neondatabase/serverless";
 
 let pool: Pool | null = null;
 
@@ -11,14 +11,10 @@ export function getPool(): Pool {
     }
 
     pool = new Pool({
-      connectionString: connString,
-      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-      max: 20,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 2000,
+      connectionString: connString
     });
 
-    pool.on("error", (err) => {
+    pool.on("error", (err: any) => {
       console.error("PostgreSQL pool error:", err);
     });
   }
