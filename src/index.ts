@@ -23,7 +23,7 @@ app.use(express.json());
 
 // Health check endpoint
 app.get("/", (req, res) => {
-	res.json({ message: "Express.js running on Cloudflare Workers!\nThis is the bean to green API used for the PWA under development! 🫛"})
+	res.json({ message: "Express.js running on Cloudflare Workers! This is the bean to green API used for the PWA under development! 🫛"})
 })
 
 app.use("/api/users", userRoutes);
