@@ -41,5 +41,12 @@ authRoutes.post("/register", async (req: Request, res: Response) => {
   }
 });
 
+authRoutes.post("/login", async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  // Query DB for user
+  // Use bcrypt.compare() to verify password
+  // Call generateToken() to create JWT
+  // Return { token: "jwt...", userId: "..." }
+});
 
 export default authRoutes;

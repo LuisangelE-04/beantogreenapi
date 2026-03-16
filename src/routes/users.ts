@@ -3,9 +3,9 @@ import { getPool } from "../db/pool";
 
 const userRoutes = Router();
 
-userRoutes.get("/user", async (req: Request, res: Response) => {
+userRoutes.get("/profile", async (req: Request, res: Response) => {
   try {
-    const userId = req.headers["x-user-id"] as string;
+    const userId = (req as any).userId;
     
     if (!userId) {
       return res.status(401).json({ error: "User ID requried" });
@@ -44,9 +44,9 @@ userRoutes.get("/user", async (req: Request, res: Response) => {
   }
 });
 
-userRoutes.patch("/user", (req, res) => {
+userRoutes.patch("/profile", (req, res) => {
   try {
-    const userId = req.headers["x-user-id"] as string;
+    const userId = (req as any).userId;
 
     if(!userId) {
       return res.status(401).json({ error: "User ID required" });
@@ -91,7 +91,7 @@ userRoutes.patch("/user", (req, res) => {
   }
 });
 
-userRoutes.get("/user/stats", async (req: Request, res: Response) => {
+userRoutes.get("/stats", async (req: Request, res: Response) => {
   
 })
 
