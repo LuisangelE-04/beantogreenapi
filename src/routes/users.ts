@@ -59,7 +59,7 @@ userRoutes.patch("/profile", (req, res) => {
       allowedUpdates.push({ field: "name", column: "name", value: name });
     }
     if (email !== undefined) {
-      allowedUpdates.push({ field: "email", column: "email",value: name });
+      allowedUpdates.push({ field: "email", column: "email",value: email });
     }
     if (isAnonymous !== undefined) {
       allowedUpdates.push({ field: "is_anonymous", column: "is_anonymous", value: isAnonymous});

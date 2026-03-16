@@ -15,6 +15,7 @@ import { httpServerHandler } from "cloudflare:node";
 import express from "express";
 import userRoutes from "./routes/users";
 import authRoutes from "./routes/auth";
+import { authenticate } from "./middleware/auth";
 
 const app = express()
 
@@ -27,7 +28,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api/user", userRoutes);
-app.use("/api/auth", authRoutes)
+app.use("/api/auth", authenticate, authRoutes)
 
 app.listen(3000);
 export default httpServerHandler( { port: 3000 })
