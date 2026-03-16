@@ -27,8 +27,8 @@ app.get("/", (req, res) => {
 	res.json({ message: "Express.js running on Cloudflare Workers! This is the bean to green API used for the PWA under development! 🫛"})
 })
 
-app.use("/api/user", userRoutes);
-app.use("/api/auth", authenticate, authRoutes)
+app.use("/api/users", authenticate, userRoutes);
+app.use("/api/auth", authRoutes)
 
 app.listen(3000);
 export default httpServerHandler( { port: 3000 })
