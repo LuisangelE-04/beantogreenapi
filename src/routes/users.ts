@@ -1,5 +1,5 @@
 import {Router, Request, Response } from "express";
-import { getPool } from "../db/pool";
+import { query } from "../db/pool";
 
 const userRoutes = Router();
 
@@ -11,9 +11,7 @@ userRoutes.get("/profile", async (req: Request, res: Response) => {
       return res.status(401).json({ error: "User ID requried" });
     }
 
-    const pool = getPool();
-
-    const result = await pool.query(
+    const result = await query(
       `
       SELECT id, name, email, is_anonymous, phone_number
       FROM users
