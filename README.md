@@ -85,7 +85,7 @@ npm run deploy
 Or directly with wrangler:
 
 ```bash
-wrangler deploy
+npx wrangler deploy
 ```
 
 This uploads your Worker to Cloudflare and makes it live on your configured route.
@@ -93,13 +93,13 @@ This uploads your Worker to Cloudflare and makes it live on your configured rout
 ### Deployment Prerequisites
 
 Before deploying, ensure:
-1. You're authenticated with Cloudflare (`wrangler login`)
-2. Your environment variables and secrets are configured in Cloudflare dashboard or via `wrangler secret put`
+1. You're authenticated with Cloudflare (`npx wrangler login`)
+2. Your environment variables and secrets are configured in Cloudflare dashboard or via `npx wrangler secret put`
 3. Database connection strings are set as secrets, not in source code
 
 ```bash
 # Example: Set a database connection secret
-wrangler secret put DATABASE_URL
+npx wrangler secret put DATABASE_URL
 ```
 
 ## Environment Variables & Secrets
@@ -113,7 +113,7 @@ Environment variables for local development should be handled through Wrangler's
 Store sensitive data (database credentials, API keys) using Wrangler secrets:
 
 ```bash
-wrangler secret put SECRET_NAME
+npx wrangler secret put SECRET_NAME
 ```
 
 Access secrets in your Worker code via environment variables passed to the Worker context.
