@@ -11,9 +11,11 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { env } from "cloudflare:workers";
 import { httpServerHandler } from "cloudflare:node";
 import express from "express";
+import userRoutes from "./routes/users";
+import authRoutes from "./routes/auth";
+import { authenticate } from "./middleware/auth";
 
 const app = express()
 
@@ -22,8 +24,11 @@ app.use(express.json());
 
 // Health check endpoint
 app.get("/", (req, res) => {
-	res.json({ message: "Express.js running on Cloudflare Workers!"})
+	res.json({ message: "Express.js running on Cloudflare Workers! This is the bean to green API used for the PWA under development! 🫛"})
 })
+
+app.use("/api/users", authenticate, userRoutes);
+app.use("/api/auth", authRoutes)
 
 app.listen(3000);
 export default httpServerHandler( { port: 3000 })
