@@ -3,7 +3,6 @@ import { query } from "../db/pool";
 import { generateToken } from "../utils/jwt";
 import { sha256 } from "@noble/hashes/sha2";
 import { bytesToHex } from "@noble/hashes/utils";
-import { error } from "node:console";
 
 
 const authRoutes = Router();
