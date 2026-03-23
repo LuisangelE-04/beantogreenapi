@@ -42,7 +42,7 @@ userRoutes.get("/profile", async (req: Request, res: Response) => {
   }
 });
 
-userRoutes.patch("/profile", (req, res) => {
+userRoutes.patch("/profile", async (req, res) => {
   try {
     const userId = (req as any).userId;
 
@@ -73,18 +73,36 @@ userRoutes.patch("/profile", (req, res) => {
       });
     }
 
+    const setClause = allowedUpdates.map((udpate, index) => `${udpate.column} = $${index + 1}`).join(", ");
+    const values = allowedUpdates.map(update => update.value);
+    values.push(userId);
+
+    const updateQuery = `
+    UPDATE users
+    SET ${setClause}
+    WHERE id = $${allowedUpdates.length + 1}
+    RETURNING id, name, email, is_anonymous, phone_number
+    `;
+
+    const reuslt = await query(updateQuery, values);
+
+    if (reuslt.rows.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const updatedUser = reuslt.rows[0];
+
     res.json({
       message: "Profile updated successfully",
       user: {
-        name: name,
-        email: email,
-        isAnonymous: isAnonymous,
-        phone: phone
+        name: updatedUser.name,
+        email: updatedUser.email,
+        isAnonymous: updatedUser.is_anonymous,
+        phone: updatedUser.phone_number
       }
     });
   } catch (error: any) {
     console.error("Error updating user profile:", error);
-
     res.status(500).json({ error: "Failed to update profile" });
   }
 });

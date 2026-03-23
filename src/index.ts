@@ -21,9 +21,7 @@ import cors from "cors";
 const app = express()
 
 // Middleware to parse JSON bodies
-app.use(cors({
-
-}))
+app.use(cors())
 app.use(express.json());
 
 // Health check endpoint
