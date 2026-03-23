@@ -16,10 +16,14 @@ import express from "express";
 import userRoutes from "./routes/users";
 import authRoutes from "./routes/auth";
 import { authenticate } from "./middleware/auth";
+import cors from "cors";
 
 const app = express()
 
 // Middleware to parse JSON bodies
+app.use(cors({
+
+}))
 app.use(express.json());
 
 // Health check endpoint
