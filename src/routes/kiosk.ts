@@ -8,5 +8,5 @@ kioskRoutes.post("/verify-login", async (req: Request, res: Response) => {
 });
 
 kioskRoutes.post("/donation", async (req: Request, res: Response) => {
-
+  // main focus for now using the physical scale to weigh coffee grounds
 });
