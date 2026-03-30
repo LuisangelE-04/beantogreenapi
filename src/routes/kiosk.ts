@@ -32,7 +32,7 @@ kioskRoutes.post("/donation", async (req: Request, res: Response) => {
 
     if (typeof weight_grams !== "number" || weight_grams <= 0) {
       return res.status(400).json({
-        error: "weight_grams must be a positive number"
+        error: "weight_grams must be a positive number or in integer form"
       });
     }
 
@@ -83,3 +83,5 @@ kioskRoutes.post("/donation", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to record donation" });
   }
 });
+
+export default kioskRoutes;
