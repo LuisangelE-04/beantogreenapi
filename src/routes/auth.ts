@@ -1,6 +1,6 @@
 import { Router, Request, Response} from "express";
 import { query } from "../db/pool";
-import { generateToken } from "../utils/jwt";
+import { generateQRToken, generateToken, verifyToken } from "../utils/jwt";
 import { sha256 } from "@noble/hashes/sha2";
 import { bytesToHex } from "@noble/hashes/utils";
 
@@ -122,6 +122,40 @@ authRoutes.post("/login", async (req: Request, res: Response) => {
   } catch (error: any) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Login failed" });
+  }
+});
+
+authRoutes.post("/generate-qr", async (req: Request, res: Response) => {
+  try {
+    const QRCode = require("qrcode");
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({
+        error: "Valid session token required to generate QR code"
+      });
+    }
+
+    const verified = verifyToken(token);
+
+    if (!verified) {
+      return res.status(401).json({
+        error: "Invalid or expired qr token"
+      });
+    }
+
+    const QRToken = generateQRToken(verified.userId);
+
+    const QRCodeDataUrl = await QRCode.toDataURL(QRToken);
+
+    res.json({
+      qr_token: QRToken,
+      qr_code: QRCodeDataUrl,
+      expires_in: "15 minutes"
+    });
+  } catch (error: any) {
+    console.error("Error generating QR code:", error);
+    res.status(500).json({ error: "Failed to generate QR code" });
   }
 });
 
