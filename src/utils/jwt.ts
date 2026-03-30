@@ -50,7 +50,7 @@ export function generateQRToken(userId: string): string {
 
     return token;
   } catch (error) {
-    console.error("Error generating QR token:", errro);
+    console.error("Error generating QR token:", error);
     throw new Error("Failed to generate QR token");
   }
 }
