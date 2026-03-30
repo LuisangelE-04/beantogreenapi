@@ -3,6 +3,7 @@ import { query } from "../db/pool";
 import { generateQRToken, generateToken, verifyToken } from "../utils/jwt";
 import { sha256 } from "@noble/hashes/sha2";
 import { bytesToHex } from "@noble/hashes/utils";
+import QRCode from "qrcode";
 
 
 const authRoutes = Router();
@@ -127,7 +128,6 @@ authRoutes.post("/login", async (req: Request, res: Response) => {
 
 authRoutes.post("/generate-qr", async (req: Request, res: Response) => {
   try {
-    const QRCode = require("qrcode");
     const { token } = req.body;
 
     if (!token) {
@@ -140,13 +140,21 @@ authRoutes.post("/generate-qr", async (req: Request, res: Response) => {
 
     if (!verified) {
       return res.status(401).json({
-        error: "Invalid or expired qr token"
+        error: "Invalid or expired token"
       });
     }
 
     const QRToken = generateQRToken(verified.userId);
 
-    const QRCodeDataUrl = await QRCode.toDataURL(QRToken);
+    const QRCodeDataUrl = await QRCode.toString(QRToken, {
+      type: "svg",
+      width: 300,
+      margin: 1,
+      color: {
+        dark: "#000000",
+        light: "#FFFFFF"
+      }
+    });
 
     res.json({
       qr_token: QRToken,
