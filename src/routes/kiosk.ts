@@ -8,12 +8,10 @@ kioskRoutes.post("/verify-login", async (req: Request, res: Response) => {
 
 });
 
-// Helper function to calculate environmental impact from weight in grams
 function calculateImpact(weightGrams: number) {
-  // Example calculations (adjust these constants based on your impact model)
-  // These are placeholder values - update with your actual impact metrics
-  const impactKwh = (weightGrams / 1000) * 0.05; // 0.05 kWh per kg
-  const impactCo2Kg = (weightGrams / 1000) * 0.12; // 0.12 kg CO2 per kg
+  const impactKwh = (weightGrams / 1000) * 0.03;
+  // TODO: add proper values for methane reduction impact
+  const impactCo2Kg = (weightGrams / 1000) * 0.12;
   
   return {
     impact_kwh: parseFloat(impactKwh.toFixed(4)),
