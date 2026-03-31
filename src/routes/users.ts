@@ -107,7 +107,6 @@ userRoutes.patch("/profile", async (req, res) => {
   }
 });
 
-
 userRoutes.get("/stats/monthly", async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;

@@ -1,11 +1,36 @@
 import { Router, Request, Response } from "express";
 import { query } from "../db/pool";
 import { v4 as uuidv4 } from "uuid";
+import { verifyQRToken } from '../utils/jwt';
 
 const kioskRoutes = Router();
 
 kioskRoutes.post("/verify-login", async (req: Request, res: Response) => {
+  try {
+    const { qr_token } = req.body;
 
+    if (!qr_token) {
+      return res.status(400).json({
+        error: "Missing qr_token"
+      });
+    }
+
+    const decoded = verifyQRToken(qr_token);
+
+    if (!decoded) {
+      return res.status(401).json({
+        error: "Invalid or expired QR code. Generate a new one."
+      });
+    }
+
+    res.json({
+      user_id: decoded.userId,
+      message: "QR code verified successfully"
+    });
+  } catch (error: any) {
+    console.error("Error verifying QR login:", error);
+    res.status(500).json({ error: "Failed to verify QR code" });
+  }
 });
 
 function calculateImpact(weightGrams: number) {
@@ -21,8 +46,19 @@ function calculateImpact(weightGrams: number) {
 
 kioskRoutes.post("/donation", async (req: Request, res: Response) => {
   try {
-    const { device_id, location_id, weight_grams, event_id: providedEventId } = req.body;
-    const userId = (req as any).userId || null;
+    const { device_id, location_id, weight_grams, event_id: providedEventId, QRToken } = req.body;
+    let userId = (req as any).userId || null;
+
+    if (QRToken) {
+      const decoded = verifyQRToken(QRToken);
+      if (decoded) {
+        userId = decoded.userId;
+      } else {
+        return res.status(401).json({
+          error: "Invalid or expired QR code"
+        });
+      }
+    }
 
     if (!device_id || !location_id || weight_grams === undefined || weight_grams === null) {
       return res.status(400).json({
