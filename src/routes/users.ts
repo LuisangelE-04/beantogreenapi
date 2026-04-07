@@ -69,7 +69,7 @@ userRoutes.patch("/profile", async (req, res) => {
     if (allowedUpdates.length === 0) {
       return res.status(400).json({
         error: "No valid fields to update",
-        allowedFields: ["name", "phone", "isAnonymous"]
+        allowedFields: ["name", "email", "phone", "isAnonymous"]
       });
     }
 
@@ -106,7 +106,6 @@ userRoutes.patch("/profile", async (req, res) => {
     res.status(500).json({ error: "Failed to update profile" });
   }
 });
-
 
 userRoutes.get("/stats/monthly", async (req: Request, res: Response) => {
   try {
