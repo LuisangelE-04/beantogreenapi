@@ -5,7 +5,7 @@ import { verifyQRToken } from '../utils/jwt';
 
 const kioskRoutes = Router();
 
-kioskRoutes.post("/verify-login", async (req: Request, res: Response) => {
+kioskRoutes.post("/verify-qr", async (req: Request, res: Response) => {
   try {
     const { qr_token } = req.body;
 
