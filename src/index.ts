@@ -11,8 +11,28 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
-	},
-} satisfies ExportedHandler<Env>;
+import { httpServerHandler } from "cloudflare:node";
+import express from "express";
+import userRoutes from "./routes/users";
+import authRoutes from "./routes/auth";
+import kioskRoutes from './routes/kiosk';
+import { authenticate } from "./middleware/auth";
+import cors from "cors";
+
+const app = express()
+
+// Middleware to parse JSON bodies
+app.use(cors())
+app.use(express.json());
+
+// Health check endpoint
+app.get("/", (req, res) => {
+	res.json({ message: "Express.js running on Cloudflare Workers! This is the bean to green API used for the PWA under development! 🫛"})
+})
+
+app.use("/api/users", authenticate, userRoutes);
+app.use("/api/auth", authRoutes)
+app.use("/api/kiosk", kioskRoutes);
+
+app.listen(3000);
+export default httpServerHandler( { port: 3000 })
