@@ -35,12 +35,12 @@ kioskRoutes.post("/verify-qr", async (req: Request, res: Response) => {
 
 function calculateImpact(weightGrams: number) {
   const impactKwh = (weightGrams / 1000) * 0.03;
-  // TODO: add proper values for methane reduction impact
-  const impactCo2Kg = (weightGrams / 1000) * 0.12;
+  const methaneGrams = weightGrams * 0.2;
   
   return {
     impact_kwh: parseFloat(impactKwh.toFixed(4)),
-    impact_co2_kg: parseFloat(impactCo2Kg.toFixed(4))
+    methane_grams: parseFloat(methaneGrams.toFixed(4)),
+    impact_co2_kg: parseFloat((methaneGrams / 1000).toFixed(4))
   };
 }
 
