@@ -1,6 +1,7 @@
 import { Router, Request, Response} from "express";
 import { query } from "../db/pool";
 import { generateQRToken, generateToken, verifyToken } from "../utils/jwt";
+import { authenticate } from "../middleware/auth";
 import { sha256 } from "@noble/hashes/sha2";
 import { bytesToHex } from "@noble/hashes/utils";
 import QRCode from "qrcode";
@@ -165,6 +166,15 @@ authRoutes.post("/generate-qr", async (req: Request, res: Response) => {
     console.error("Error generating QR code:", error);
     res.status(500).json({ error: "Failed to generate QR code" });
   }
+});
+
+authRoutes.get("/verify", authenticate, (req: Request, res: Response) => {
+  const userId = (req as any).userId;
+  res.json({
+    valid: true,
+    userId: userId,
+    message: "Token is valid"
+  });
 });
 
 export default authRoutes;
