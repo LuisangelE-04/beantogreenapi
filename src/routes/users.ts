@@ -119,9 +119,9 @@ userRoutes.get("/stats/monthly", async (req: Request, res: Response) => {
       `
       SELECT 
         DATE_TRUNC('month', created_at) as month,
-        ROUND(SUM(weight_grams) / 1000.0, 2) as total_kg_contributed,
-        ROUND(SUM(impact_kwh)::numeric, 2) as total_kwh_impact,
-        ROUND(SUM(impact_co2_kg)::numeric, 2) as total_co2_kg_impact,
+        ROUND(SUM(weight_grams) / 1000.0, 4) as total_kg_contributed,
+        ROUND(SUM(impact_kwh)::numeric, 4) as total_kwh_impact,
+        ROUND(SUM(impact_co2_kg)::numeric, 4) as total_co2_kg_impact,
         COUNT(*) as donation_count
       FROM donations
       WHERE user_id = $1
