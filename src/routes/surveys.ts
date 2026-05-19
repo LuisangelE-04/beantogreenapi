@@ -7,7 +7,12 @@ const surveys = Router();
 surveys.get("/", async (req: Request, res: Response) => {
   try {
     const result = await query(
-      `SELECT id, name, description, active, created_at, updated_at FROM surveys WHERE active = true ORDER BY created_at DESC`,
+      `SELECT s.id, s.name, s.description, s.active, s.created_at, s.updated_at, COUNT(sr.id) as responses 
+       FROM surveys s 
+       LEFT JOIN survey_responses sr ON s.id = sr.survey_id 
+       WHERE s.active = true 
+       GROUP BY s.id, s.name, s.description, s.active, s.created_at, s.updated_at
+       ORDER BY s.created_at DESC`,
       []
     );
 
