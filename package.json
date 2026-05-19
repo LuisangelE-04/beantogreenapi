@@ -7,7 +7,10 @@
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
 		"test": "vitest",
-		"cf-typegen": "wrangler types"
+		"cf-typegen": "wrangler types",
+		"db:migrate": "node scripts/run_migrations.js",
+		"db:migrate:status": "node scripts/run_migrations.js --status",
+		"db:export-schema": "node scripts/export_schema.js"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.12.4",

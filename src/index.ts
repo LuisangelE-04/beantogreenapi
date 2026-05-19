@@ -16,6 +16,7 @@ import express from "express";
 import userRoutes from "./routes/users";
 import authRoutes from "./routes/auth";
 import kioskRoutes from './routes/kiosk';
+import surveysRoutes from './routes/surveys';
 import { authenticate } from "./middleware/auth";
 import cors from "cors";
 
@@ -33,6 +34,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", authenticate, userRoutes);
 app.use("/api/auth", authRoutes)
 app.use("/api/kiosk", kioskRoutes);
+app.use("/api/surveys", surveysRoutes);
 
 app.listen(3000);
 export default httpServerHandler( { port: 3000 })
