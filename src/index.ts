@@ -17,8 +17,10 @@ import userRoutes from "./routes/users";
 import authRoutes from "./routes/auth";
 import kioskRoutes from './routes/kiosk';
 import surveysRoutes from './routes/surveys';
+import leaderboardRoutes from './routes/leaderboard';
 import { authenticate } from "./middleware/auth";
 import cors from "cors";
+import { refreshLeaderboard } from "./services/leaderboardService";
 
 const app = express()
 
@@ -35,6 +37,15 @@ app.use("/api/users", authenticate, userRoutes);
 app.use("/api/auth", authRoutes)
 app.use("/api/kiosk", kioskRoutes);
 app.use("/api/surveys", surveysRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 
 app.listen(3000);
 export default httpServerHandler( { port: 3000 })
+
+export async function scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+	ctx.waitUntil(
+		refreshLeaderboard()
+			.then(() => console.log("Scheduled leaderboard refresh completed"))
+			.catch((error) => console.error("Scheduled leaderboard refresh failed:", error))
+	);
+}
