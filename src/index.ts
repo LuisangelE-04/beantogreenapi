@@ -40,12 +40,16 @@ app.use("/api/surveys", surveysRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 
 app.listen(3000);
-export default httpServerHandler( { port: 3000 })
 
-export async function scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
-	ctx.waitUntil(
-		refreshLeaderboard()
-			.then(() => console.log("Scheduled leaderboard refresh completed"))
-			.catch((error) => console.error("Scheduled leaderboard refresh failed:", error))
-	);
-}
+const handler = httpServerHandler({ port: 3000 });
+
+export default {
+	fetch: (handler as any).fetch ?? (handler as any),
+	async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+		ctx.waitUntil(
+			refreshLeaderboard()
+				.then(() => console.log("Scheduled leaderboard refresh completed"))
+				.catch((error) => console.error("Scheduled leaderboard refresh failed:", error))
+		);
+	}
+};

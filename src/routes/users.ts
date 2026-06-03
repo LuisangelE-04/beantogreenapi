@@ -115,29 +115,69 @@ userRoutes.get("/stats/monthly", async (req: Request, res: Response) => {
       return res.status(401).json({ error: "User ID required" });
     }
 
+    // Debug mode: return raw donations for this user to inspect timestamps
+    const debug = (req.query.debug as string) === '1' || (req.query.debug as string) === 'true';
+
+    // Get current month and year
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1; // 1-12
+    const currentYear = now.getFullYear();
+
     const result = await query(
       `
       SELECT 
-        DATE_TRUNC('month', created_at) as month,
+        DATE_TRUNC('month', COALESCE("timestamp", created_at)) as month,
         ROUND(SUM(weight_grams) / 1000.0, 4) as total_kg_contributed,
         ROUND(SUM(impact_kwh)::numeric, 4) as total_kwh_impact,
         ROUND(SUM(impact_co2_kg)::numeric, 4) as total_co2_kg_impact,
         COUNT(*) as donation_count
       FROM donations
       WHERE user_id = $1
-      GROUP BY DATE_TRUNC('month', created_at)
-      ORDER BY month DESC
+        AND EXTRACT(MONTH FROM COALESCE("timestamp", created_at)) = $2
+        AND EXTRACT(YEAR FROM COALESCE("timestamp", created_at)) = $3
+      GROUP BY DATE_TRUNC('month', COALESCE("timestamp", created_at))
       `,
-      [userId]
+      [userId, currentMonth, currentYear]
     );
 
-    const monthlyStats = result.rows.map(row => ({
+    let monthlyStats = result.rows.map(row => ({
       month: row.month,
       kgContributed: parseFloat(row.total_kg_contributed),
       kwhImpact: parseFloat(row.total_kwh_impact),
       co2kgImpact: parseFloat(row.total_co2_kg_impact),
       donationCount: parseInt(row.donation_count)
     }));
+
+    // If no results for current month, return zero entry
+    if (monthlyStats.length === 0) {
+      const startOfMonth = new Date(currentYear, currentMonth - 1, 1);
+      monthlyStats = [{
+        month: startOfMonth.toISOString(),
+        kgContributed: 0,
+        kwhImpact: 0,
+        co2kgImpact: 0,
+        donationCount: 0
+      }];
+    }
+
+    if (debug) {
+      const donationsRaw = await query(
+        `
+        SELECT id, weight_grams, impact_kwh, impact_co2_kg, "timestamp", created_at
+        FROM donations
+        WHERE user_id = $1
+        ORDER BY created_at DESC
+        LIMIT 200
+        `,
+        [userId]
+      );
+
+      return res.json({
+        userId: userId,
+        monthlyStats: monthlyStats,
+        donationsRaw: donationsRaw.rows
+      });
+    }
 
     res.json({
       userId: userId,
