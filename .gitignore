@@ -170,3 +170,6 @@ dist
 # database
 backups/
 migrations/
+
+# misc
+*.docs

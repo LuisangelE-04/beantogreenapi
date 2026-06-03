@@ -45,7 +45,7 @@ const handler = httpServerHandler({ port: 3000 });
 
 export default {
 	fetch: (handler as any).fetch ?? (handler as any),
-	async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
+	async scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
 		ctx.waitUntil(
 			refreshLeaderboard()
 				.then(() => console.log("Scheduled leaderboard refresh completed"))
